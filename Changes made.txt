@@ -1,0 +1,48 @@
+Changes made from original GitHub implementation to Iteration2:
+
+Certainly! Here's a clear list of the changes made from the original B+ Tree implementation to the new one, categorized for clarity:
+
+### **1. Node Class Changes**
+- **Added Attribute `is_leaf`**:
+  - **What Changed**: Added an `is_leaf` parameter to the `Node` class to indicate whether the node is a leaf or internal.
+  - **Why**: This provides a clear distinction between leaf nodes and internal nodes, making node handling and splitting more explicit and less error-prone.
+
+### **2. Split Method Changes**
+- **Handled `is_leaf` in Split**:
+  - **What Changed**: During a split operation, the new left and right nodes are created using the `is_leaf` value from the original node.
+  - **Why**: Ensures that newly split nodes retain the correct type (leaf or internal), preventing issues related to incorrect node behavior during further operations.
+
+- **Updated `next_leaf` and `prev_leaf` Pointers in LeafNode Split**:
+  - **What Changed**:
+    - Set `right.prev_leaf = self` to maintain the link from the original node to the new right node.
+    - Set `right.next_leaf = self.next_leaf` to maintain the link from the new right node to the next leaf node.
+    - If `self.next_leaf` exists, updated `self.next_leaf.prev_leaf = right` to ensure the next leaf points back to the new right node.
+    - Set `self.next_leaf = right` to link the original node to the new right node.
+  - **Why**: These updates ensure the linked list structure of leaf nodes remains consistent, allowing for efficient sequential access and range queries.
+
+- **Return the `top` Node After Split**:
+  - **What Changed**: The split method now returns the "top" node, which becomes the parent of the split nodes.
+  - **Why**: Facilitates correct propagation of splits upwards in the tree, ensuring the tree remains balanced and the root changes are handled properly.
+
+### **3. Root Node Initialization**
+- **Initialize Root as LeafNode**:
+  - **What Changed**: The root is explicitly initialized as a `LeafNode` with `is_leaf=True`.
+  - **Why**: A B+ Tree starts with a simple structure where the root serves as both the root and the leaf, making initial insertions straightforward. It only changes to an internal node when a split occurs.
+
+### **4. New Methods for Improved Functionality**
+- **Added `find_leaf(key)` Method**:
+  - **What Changed**: A `find_leaf()` method was added to locate the appropriate leaf node for a given key.
+  - **Why**: This makes locating the correct leaf node more explicit, simplifying the traversal logic and enhancing readability.
+
+- **Added `range_query(start_key, end_key, inclusive=True)` Method**:
+  - **What Changed**: A `range_query()` method was added to efficiently retrieve all keys within a specified range.
+  - **Why**: Supports efficient retrieval for range-based queries, leveraging the correct linked list structure of the leaf nodes.
+
+### **Summary of Changes Impact**
+- **Improved Linked Leaf Management**: Correct updates to `prev_leaf` and `next_leaf` ensure that the leaf nodes are always properly linked, maintaining consistency for range queries.
+- **Clearer Differentiation of Node Types**: The addition of `is_leaf` allows better distinction between leaf and internal nodes, simplifying tree operations.
+- **Efficient Tree Growth and Splits**: Returning the "top" node during a split ensures that tree balancing and root changes are managed correctly, reducing errors during growth.
+
+These changes collectively make the B+ Tree implementation more robust, easier to maintain, and more efficient, particularly for operations like insertions, deletions, and range queries.
+
+(Changes provided by ChatGPT)
